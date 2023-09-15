@@ -3,12 +3,22 @@ name: .NET Core Angular CI
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
+    env:
+      EXPOSED_URLS: ${{ vars.EXPOSED_URLS }}
+      JWT_KEY: ${{ vars.JWT_KEY }}
+      MAPPED_PORT_F: ${{ vars.MAPPED_PORT_F }}
+      MAPPING_PORT_F: ${{ vars.MAPPING_PORT_F }}
+      MAPPED_PORT_B: ${{ vars.MAPPED_PORT_B }}
+      MAPPING_PORT_B: ${{ vars.MAPPING_PORT_B }}
+      TESS_DATA_PATH: ${{ vars.TESS_DATA_PATH }}
+      TESS_LANG: ${{ vars.TESS_LANG }}
+      
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -33,23 +43,34 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-    - name: Build and push .NET Core backend
+    # Build backend
+    - name: Build and push backend
       uses: docker/build-push-action@v2
       with:
         context: ./ocr-backend
         file: ./ocr-backend/Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ocr-invoice-backend:latest
+        build-args: |
+          ASPNETCORE_URLS=${{ env.EXPOSED_URLS }}
+          JWT_KEY=${{ env.JWT_KEY }}
+          MAPPED_PORT_F=${{ env.MAPPED_PORT_F }}
+          MAPPING_PORT_F=${{ env.MAPPING_PORT_F }}
+          MAPPED_PORT_B=${{ env.MAPPED_PORT_B }}
+          MAPPING_PORT_B=${{ env.MAPPING_PORT_B }}
+          TESS_DATA_PATH=${{ env.TESS_DATA_PATH }}
+          TESS_LANG=${{ env.TESS_LANG }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
 
-    - name: Build and push Angular frontend
+    # Build frontend
+    - name: Build and push frontend
       uses: docker/build-push-action@v2
       with:
         context: ./ocr-frontend
         file: ./ocr-frontend/Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ocr-invoice-frontend:latest
+        build-args: MAPPED_PORT_F=${{ env.MAPPED_PORT_F }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
-
