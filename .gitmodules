@@ -1,0 +1,6 @@
+[submodule "ocr-backend"]
+	path = ocr-backend
+	url = https://github.com/kbarwinski/ocr-backend.git
+[submodule "ocr-frontend"]
+	path = ocr-frontend
+	url = https://github.com/kbarwinski/ocr-frontend.git

@@ -1,0 +1,47 @@
+version: '3.8'
+version: '3.8'
+
+services:
+   web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+
+    image: ocr-backend-image
+    ports:
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "${MAPPING_PORT_B}:${MAPPED_PORT_B}"
+    environment:
+      - ASPNETCORE_URLS=${EXPOSED_URLS}
+      
+      - MAPPED_PORT_F=${MAPPED_PORT_F}
+      - MAPPING_PORT_F=${MAPPING_PORT_F}
+      - MAPPED_PORT_B=${MAPPED_PORT_B}
+      - MAPPING_PORT_B=${MAPPING_PORT_B}
+      
+      - TESS_DATA_PATH=${TESS_DATA_PATH}
+      - TESS_LANG=${TESS_LANG}    
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "${MAPPING_PORT_F}:${MAPPED_PORT_F}"
+    networks:
+      - app-network
+    depends_on:
+      - backend
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,38 @@
+name: Heroku CD
+
+on:
+  workflow_run:
+    workflows: [".NET Core Angular CI"]
+    types:
+      - completed
+
+jobs:
+  deploy-to-heroku:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Log in to Heroku Container Registry
+      run: |
+        docker login --username=_ --password=${{ secrets.HEROKU_API_KEY }} registry.heroku.com
+
+    - name: Pull images from Docker Hub and tag for Heroku
+      run: |
+        docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/ocr-invoice-frontend:latest
+        docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/ocr-invoice-backend:latest
+        docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/ocr-invoice-frontend:latest registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
+        docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/ocr-invoice-backend:latest registry.heroku.com/${{ secrets.HEROKU_API_NAME }}/web
+
+    - name: Push Docker images to Heroku Container Registry
+      run: |
+        docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
+        docker push registry.heroku.com/${{ secrets.HEROKU_API_NAME }}/web
+
+    - name: Deploy to Heroku
+      run: |
+        heroku container:release web --app ${{ secrets.HEROKU_APP_NAME }}
+        heroku container:release web --app ${{ secrets.HEROKU_API_NAME }}
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
