@@ -32,7 +32,22 @@ jobs:
 
     - name: Deploy to Heroku
       run: |
+        heroku config:set MAPPED_PORTS="${{ vars.MAPPING_PORT_F }}:${{ vars.MAPPED_PORT_F }}" \
+        --app ${{ secrets.HEROKU_APP_NAME }}
+        
         heroku container:release web --app ${{ secrets.HEROKU_APP_NAME }}
+        
+        heroku config:set \
+        ASPNETCORE_URLS=${{ vars.EXPOSED_URLS }} \
+        JWT_KEY=${{ vars.JWT_KEY }} \
+        MAPPED_PORT_F=${{ vars.MAPPED_PORT_F }} \
+        MAPPING_PORT_F=${{ vars.MAPPING_PORT_F }} \
+        MAPPED_PORT_B=${{ vars.MAPPED_PORT_B }} \
+        MAPPING_PORT_B=${{ vars.MAPPING_PORT_B }} \
+        TESS_DATA_PATH=${{ vars.TESS_DATA_PATH }} \
+        TESS_LANG=${{ vars.TESS_LANG }} \
+        --app ${{ secrets.HEROKU_API_NAME }}
+
         heroku container:release web --app ${{ secrets.HEROKU_API_NAME }}
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
