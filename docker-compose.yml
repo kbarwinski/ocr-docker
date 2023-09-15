@@ -21,13 +21,15 @@ services:
     environment:
       - ASPNETCORE_URLS=${EXPOSED_URLS}
       
+      - JWT_KEY=${JWT_KEY}
+      
       - MAPPED_PORT_F=${MAPPED_PORT_F}
       - MAPPING_PORT_F=${MAPPING_PORT_F}
       - MAPPED_PORT_B=${MAPPED_PORT_B}
       - MAPPING_PORT_B=${MAPPING_PORT_B}
       
       - TESS_DATA_PATH=${TESS_DATA_PATH}
-      - TESS_LANG=${TESS_LANG}    
+      - TESS_LANG=${TESS_LANG}      
     networks:
       - app-network
 
