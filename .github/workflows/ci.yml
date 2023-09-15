@@ -47,8 +47,8 @@ jobs:
     - name: Build and push backend
       uses: docker/build-push-action@v2
       with:
-        context: ./backend
-        file: ./backend/Dockerfile
+        context: ./ocr-backend
+        file: ./ocr-backend/Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ocr-invoice-backend:latest
         build-args: |
@@ -67,8 +67,8 @@ jobs:
     - name: Build and push frontend
       uses: docker/build-push-action@v2
       with:
-        context: ./frontend
-        file: ./frontend/Dockerfile
+        context: ./ocr-frontend
+        file: ./ocr-frontend/Dockerfile
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ocr-invoice-frontend:latest
         build-args: MAPPED_PORT_F=${{ env.MAPPED_PORT_F }}
