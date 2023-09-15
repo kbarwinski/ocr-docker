@@ -3,7 +3,7 @@ name: .NET Core Angular CI
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
