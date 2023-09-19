@@ -46,6 +46,8 @@ jobs:
         MAPPING_PORT_B=${{ vars.MAPPING_PORT_B }} \
         TESS_DATA_PATH=${{ vars.TESS_DATA_PATH }} \
         TESS_LANG=${{ vars.TESS_LANG }} \
+        ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }} \
+        ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }} \
         --app ${{ secrets.HEROKU_API_NAME }}
 
         heroku container:release web --app ${{ secrets.HEROKU_API_NAME }}
