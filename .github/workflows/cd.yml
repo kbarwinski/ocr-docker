@@ -48,6 +48,8 @@ jobs:
         TESS_LANG=${{ vars.TESS_LANG }} \
         ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }} \
         ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }} \
+        USER_EMAIL=${{ vars.USER_EMAIL }} \
+        USER_PASSWORD=${{ vars.USER_PASSWORD }} \
         --app ${{ secrets.HEROKU_API_NAME }}
 
         heroku container:release web --app ${{ secrets.HEROKU_API_NAME }}
